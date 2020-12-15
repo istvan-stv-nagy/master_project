@@ -3,7 +3,10 @@
     <words>
       <w>calib</w>
       <w>dataset</w>
+      <w>mlab</w>
+      <w>sobel</w>
       <w>velodyne</w>
+      <w>visu</w>
     </words>
   </dictionary>
 </component>

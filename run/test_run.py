@@ -1,8 +1,5 @@
-from data.data_reader import DataReader
-from visu.frame_visu import FrameVisu
+from run.runnable import Runnable
 
 if __name__ == '__main__':
-    reader = DataReader()
-    frame_data = reader.read_frame(60)
-    visu = FrameVisu(frame_data)
-    visu.show()
+    runnable = Runnable()
+    runnable.run(0)
