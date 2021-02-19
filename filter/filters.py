@@ -20,10 +20,10 @@ class PointCloudFilter(Filter):
         self.max_z = max_z
 
     def filter(self, point_cloud):
-        x = point_cloud[:, 0]
-        y = point_cloud[:, 1]
-        z = point_cloud[:, 2]
-        r = point_cloud[:, 3]
+        x = point_cloud[0, :]
+        y = point_cloud[1, :]
+        z = point_cloud[2, :]
+        r = point_cloud[3, :]
         mask = (self.min_x < x) & (x < self.max_x) & \
                (self.min_y < y) & (y < self.max_y) & \
                (self.min_z < z) & (z < self.max_z)
@@ -31,4 +31,4 @@ class PointCloudFilter(Filter):
         y = y[mask]
         z = z[mask]
         r = r[mask]
-        return np.vstack((x, y, z, r)).T
+        return np.vstack((x, y, z, r))

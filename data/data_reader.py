@@ -29,7 +29,7 @@ class DataReader:
         return str(frame_count).zfill(6)
 
     def read_point_cloud(self, path):
-        point_cloud = np.fromfile(str(path), dtype=np.float32, count=-1).reshape([-1, 4])
+        point_cloud = np.fromfile(str(path), dtype=np.float32, count=-1).reshape([-1, 4]).T
         return point_cloud
 
     def read_calib_file(self, path):
