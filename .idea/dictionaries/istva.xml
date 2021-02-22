@@ -2,9 +2,13 @@
   <dictionary name="istva">
     <words>
       <w>calib</w>
+      <w>coords</w>
       <w>dataset</w>
+      <w>lidar</w>
       <w>mlab</w>
+      <w>pano</w>
       <w>sobel</w>
+      <w>velo</w>
       <w>velodyne</w>
       <w>visu</w>
     </words>
