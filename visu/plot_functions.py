@@ -21,3 +21,11 @@ def plot_signals(signals):
     fig, axs = plt.subplots(len(signals))
     for i, signal in enumerate(signals):
         axs[i].plot(np.arange(len(signal)), signal)
+
+
+def plot_signals_limits(signals, delimitations):
+    fig, axs = plt.subplots(len(signals))
+    for i, signal in enumerate(signals):
+        axs[i].plot(np.arange(len(signal)), signal)
+        for value in delimitations[i]:
+            axs[i].plot([value, value], [-0.1, 0.1], 'k-')

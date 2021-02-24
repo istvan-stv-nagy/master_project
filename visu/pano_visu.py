@@ -1,4 +1,4 @@
-from datastructures.pano_processing import PanoImage
+from datastructures.pano_image import PanoImage
 from visu.plot_functions import *
 
 

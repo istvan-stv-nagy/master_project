@@ -1,7 +1,10 @@
 from convert.conversions import Converter
 from data.data_reader import DataReader
 from filter.filters import PointCloudFilter
+from labeling.label_pano import LabelPanoTool
+from labeling.labeling_post import postprocess_lines
 from visu.input_visu import InputVisu
+from visu.label_visu import LabelVisu
 from visu.pano_visu import PanoVisu
 from visu.lidar_visu import LidarVisu
 import matplotlib.pyplot as plt
@@ -20,6 +23,9 @@ class Runnable:
         self.lidar_visu = LidarVisu()
         self.projection_visu = ProjectionVisu()
 
+        self.label_pano_tool = LabelPanoTool()
+        self.label_visu = LabelVisu()
+
     def run(self, frame_count):
         frame_data = self.data_reader.read_frame(frame_count)
 
@@ -34,10 +40,15 @@ class Runnable:
 
         image_reconstruction = converter.lidar_2_image(frame_data.point_cloud)
 
-        self.input_visu.show(frame_data)
-        self.pano_visu.show(frame_data.image_color, pano_image)
-        self.lidar_visu.show(pts_road)
-        self.projection_visu.show(image_reconstruction)
+        #self.input_visu.show(frame_data)
+        #self.pano_visu.show(frame_data.image_color, pano_image)
+        #self.lidar_visu.show(pts_road)
+        #self.projection_visu.show(image_reconstruction)
+
+        lines_points = self.label_pano_tool.label(pano_image)
+        res = postprocess_lines(lines_points)
+        print(res)
+        self.label_visu.show(pano_image, res)
 
         plt.show()
         mlab.show()

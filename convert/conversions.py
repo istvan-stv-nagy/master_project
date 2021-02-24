@@ -1,7 +1,7 @@
 from data.calib_data import CalibData
 import numpy as np
 
-from datastructures.pano_processing import PanoImage
+from datastructures.pano_image import PanoImage
 
 
 class Converter:
