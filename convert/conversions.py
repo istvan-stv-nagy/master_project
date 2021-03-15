@@ -54,23 +54,25 @@ class Converter:
         z = lidar_coords[2, :]
         d = np.sqrt(x ** 2 + y ** 2 + z ** 2)
 
-        x_image = np.arctan2(-y, x) / (horizontal_res * (np.pi / 180))
-        y_image = -np.arctan2(z, d) / (vertical_res * (np.pi / 180))
+        x_image = np.arctan2(-y, x) / (horizontal_res * (np.pi / 180.0))
+        y_image = -np.arctan2(z, d) / (vertical_res * (np.pi / 180.0))
 
-        x_size = int(np.ceil((horizontal_fov[1] - horizontal_fov[0]) / horizontal_res))
-        y_size = int(np.ceil((vertical_fov[1] - vertical_fov[0]) / vertical_res))
+        x_size = int(np.trunc((horizontal_fov[1] - horizontal_fov[0]) / horizontal_res))
+        y_size = int(np.trunc((vertical_fov[1] - vertical_fov[0]) / vertical_res))
 
         x_offset = horizontal_fov[0] / horizontal_res
         x_image = np.trunc(x_image - x_offset).astype(np.int32)
+
         y_offset = vertical_fov[1] / vertical_res
-        y_image = np.trunc(y_image + y_offset + 1).astype(np.int32)
+        y_image = np.trunc(y_image + y_offset).astype(np.int32)
 
         mask = (x_image >= 0) & (x_image < x_size) & (y_image >= 0) & (y_image < y_size)
         x_image = x_image[mask]
         y_image = y_image[mask]
 
-        img = np.zeros([y_size + 1, x_size + 1])
-        img[:] = np.nan
+        img = np.zeros([y_size, x_size])
+        img[:] = -1
+        print(y_size, x_size)
 
         road_coords = self.lidar_2_road(lidar_coords)
         y_road = road_coords[1, :]

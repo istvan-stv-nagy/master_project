@@ -3,13 +3,13 @@ import os
 import numpy as np
 
 from data.calib_data import CalibData
-from data.dataset_type import *
+from data.road_type import *
 from data.frame_data import FrameData
 
 
 class DataReader:
 
-    def __init__(self, dataset_type=DatasetType.UNMARKED):
+    def __init__(self, dataset_type=RoadType.UNMARKED):
         self.dataset_type = dataset_type
         self.dataset_path = r'E:\Storage\7 Master Thesis\dataset'
         self.image_color_path = os.path.join(self.dataset_path, r'data_road\training\image_2')
