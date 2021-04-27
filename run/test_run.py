@@ -1,5 +1,6 @@
 from run.runnable import Runnable
 
 if __name__ == '__main__':
-    runnable = Runnable()
-    runnable.run(35)
+    for i in range(100):
+        runnable = Runnable()
+        runnable.run(i)

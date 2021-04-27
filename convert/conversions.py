@@ -71,7 +71,7 @@ class Converter:
         y_image = y_image[mask]
 
         img = np.zeros([y_size, x_size])
-        img[:] = -1
+        img[:] = np.nan
         print(y_size, x_size)
 
         road_coords = self.lidar_2_road(lidar_coords)
