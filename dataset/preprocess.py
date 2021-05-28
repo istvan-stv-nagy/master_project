@@ -38,7 +38,7 @@ class InputLabeling:
         return self.coords
 
 if __name__ == '__main__':
-    for f in range(35, 36):
+    for f in range(79, 95):
         path = r'E:\Storage\7 Master Thesis\dataset\curbstone_with_nan\pano' + str(f) + ".npy"
         pano = process_example(path)
         label = np.zeros((64, 514))

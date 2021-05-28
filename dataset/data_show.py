@@ -22,4 +22,4 @@ def show_data(frame):
     plt.show()
 
 if __name__ == '__main__':
-    show_data(34)
+    show_data(79)

@@ -12,7 +12,7 @@ if __name__ == '__main__':
     model.load_state_dict(torch.load(r'E:\Storage\7 Master Thesis\results\network\model_fcnn'))
     model.eval()
     runnable = Runnable()
-    pano = runnable.run(2)
+    pano = runnable.run(1)
     pano.img[np.isnan(pano.img)] = 0
     res = model(torch.from_numpy(pano.img.astype(np.float32)))
 
@@ -23,7 +23,7 @@ if __name__ == '__main__':
     pts = res.detach().numpy()
     for i, p in enumerate(pts):
         if 0 <= p[0] <= p[1] <= 514:
-            plt.plot(p[0], i, 'wo')
-            plt.plot(p[1], i, 'wo')
+            plt.plot(p[0], i, 'w.')
+            plt.plot(p[1], i, 'w.')
 
     plt.show()

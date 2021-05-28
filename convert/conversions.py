@@ -77,9 +77,16 @@ class Converter:
         road_coords = self.lidar_2_road(lidar_coords)
         y_road = road_coords[1, :]
         y_road = y_road[mask]
+        z_road = road_coords[2, :]
+        z_road = z_road[mask]
+        x_road = road_coords[0, :]
+        x_road = x_road[mask]
 
         img[y_image, x_image] = -y_road
-        return PanoImage(img)
+        return PanoImage(img, x_img=x_road, z_img=z_road)
+
+    def road_2_img(self, road_coords):
+        return np.linalg.inv(self.calib.tr_cam_to_road) @ road_coords
 
     def lidar_2_img(self, point_cloud):
         x = point_cloud[0, :]
