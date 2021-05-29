@@ -8,19 +8,19 @@ from network.unet.unet import UNET
 from network.unet.utils import *
 
 # hyperparameters
-LEARNING_RATE = 1e-4
+LEARNING_RATE = 1e-3
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 BATCH_SIZE = 16
 NUM_EPOCHS = 3
 NUM_WORKERS = 2
-IMAGE_HEIGHT = 160
-IMAGE_WIDTH = 240
+IMAGE_HEIGHT = 64
+IMAGE_WIDTH = 514
 PIN_MEMORY = True
 LOAD_MODEL = False
-TRAIN_IMG_DIR = r"E:\Storage\7 Master Thesis\addons\train"
-TRAIN_MASK_DIR = r"E:\Storage\7 Master Thesis\addons\train_masks"
-VAL_IMG_DIR = r"E:\Storage\7 Master Thesis\addons\val"
-VAL_MASK_DIR = r"E:\Storage\7 Master Thesis\addons\val_masks"
+TRAIN_IMG_DIR = r"E:\Storage\7 Master Thesis\dataset\semseg\train_nanis0\image"
+TRAIN_MASK_DIR = r"E:\Storage\7 Master Thesis\dataset\semseg\train\mask"
+VAL_IMG_DIR = r"E:\Storage\7 Master Thesis\dataset\semseg\train_nanis0\image_val"
+VAL_MASK_DIR = r"E:\Storage\7 Master Thesis\dataset\semseg\train\mask_val"
 
 
 def train(loader, model, optimizer, loss_fn, scaler):
@@ -48,13 +48,13 @@ def main():
     train_transform = A.Compose(
         [
             A.Resize(height=IMAGE_HEIGHT, width=IMAGE_WIDTH),
-            A.Rotate(limit=35, p=1.0),
-            A.HorizontalFlip(p=0.5),
-            A.VerticalFlip(p=0.1),
+            # A.Rotate(limit=35, p=1.0),
+            # A.HorizontalFlip(p=0.5),
+            # A.VerticalFlip(p=0.1),
             A.Normalize(
-                mean=[0.0, 0.0, 0.0],
-                std=[1.0, 1.0, 1.0],
-                max_pixel_value=255.0
+                mean=[0.0],
+                std=[1.0],
+                max_pixel_value=2.0
             ),
             ToTensorV2()
         ]
@@ -64,15 +64,15 @@ def main():
         [
             A.Resize(height=IMAGE_HEIGHT, width=IMAGE_WIDTH),
             A.Normalize(
-                mean=[0.0, 0.0, 0.0],
-                std=[1.0, 1.0, 1.0],
-                max_pixel_value=255.0
+                mean=[0.0],
+                std=[1.0],
+                max_pixel_value=2.0
             ),
             ToTensorV2()
         ]
     )
 
-    model = UNET(in_channels=3, out_channels=1).to(DEVICE)
+    model = UNET(in_channels=1, out_channels=1).to(DEVICE)
     loss_fn = nn.BCEWithLogitsLoss()
     optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
     train_loader, val_loader = get_loaders(

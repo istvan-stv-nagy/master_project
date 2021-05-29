@@ -16,10 +16,10 @@ class SegmentationDataset(Dataset):
 
     def __getitem__(self, item):
         img_path = os.path.join(self.image_dir, self.images[item])
-        mask_path = os.path.join(self.mask_dir, self.images[item].replace(".jpg", "_mask.gif"))
+        mask_path = os.path.join(self.mask_dir, self.images[item])
         image = np.array(Image.open(img_path))
-        mask = np.array(Image.open(mask_path).convert("L"), dtype=np.float32)
-        mask[mask == 255.0] = 1.0
+        mask = np.array(Image.open(mask_path))
+        # mask[mask == 255.0] = 1.0
         if self.transform is not None:
             augmentations = self.transform(image=image, mask=mask)
             image = augmentations["image"]

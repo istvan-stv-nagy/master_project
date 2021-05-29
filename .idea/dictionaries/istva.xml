@@ -6,8 +6,10 @@
       <w>dataset</w>
       <w>lidar</w>
       <w>mlab</w>
+      <w>optim</w>
       <w>pano</w>
       <w>sobel</w>
+      <w>trainset</w>
       <w>velo</w>
       <w>velodyne</w>
       <w>visu</w>

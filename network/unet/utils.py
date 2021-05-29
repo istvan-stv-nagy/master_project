@@ -80,8 +80,8 @@ def save_predictions_as_imgs(loader, model, folder="saved_images/", device="cuda
     for idx, (x, y) in enumerate(loader):
         x = x.to(device=device)
         with torch.no_grad():
-            preds = torch.sigmoid(model(x))
-            preds = (preds > 0.5).float()
+            preds = torch.sigmoid(model(x)).float()
+            #preds = (preds > 0.5).float()
         torchvision.utils.save_image(preds, f"{folder}/pred_{idx}.png")
         torchvision.utils.save_image(y.unsqueeze(1), f"{folder}{idx}.png")
     model.train()

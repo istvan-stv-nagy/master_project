@@ -37,7 +37,6 @@ class LabelPanoTool:
     def label(self, frame_count, pano_image: PanoImage):
         pano = np.clip((pano_image.img - self.min_pano_height) / (self.max_pano_height - self.min_pano_height), 0.0, 1.0) * 255
         self.ax.imshow(pano, cmap='jet')
-        plt.show()
         delimitations = self.postprocess_lines()
         label_image = self.generate_label(delimitations)
         output = LabelOutput(pano_image=pano_image, label_image=label_image)
