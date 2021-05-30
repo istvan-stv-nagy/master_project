@@ -11,7 +11,7 @@ from PIL import Image
 class SemanticLabeling:
     def __init__(self):
         self.min_pano_height = -0.2
-        self.max_pano_height = 0.5
+        self.max_pano_height = 0.75
         self.pts = []
         self.fig, self.ax = plt.subplots(figsize=(18, 10))
         self.cid = self.fig.canvas.mpl_connect('button_press_event', self.onclick)
@@ -67,17 +67,17 @@ class Runnable:
 
 
 if __name__ == '__main__':
-    for i in range(0, 95):
+    for i in range(84, 100):
         r = Runnable()
         pan = r.get_pano(i)
-        #lab = SemanticLabeling()
-        #l = lab.label(pan)
-        #fig, axs = plt.subplots(2)
-        #axs[0].imshow(pan.y_img)
-        #axs[1].imshow(l)
-        #plt.show()
+        lab = SemanticLabeling()
+        l = lab.label(pan)
+        # fig, axs = plt.subplots(2)
+        # axs[0].imshow(pan.y_img)
+        # axs[1].imshow(l)
+        # plt.show()
         pano_image = Image.fromarray(pan.y_img)
-        pano_image.save(r'E:\Storage\7 Master Thesis\dataset\semseg\train\image' + "\\" + str(i) + ".tif")
-        #label_image = Image.fromarray(l)
-        #label_image.save(r'E:\Storage\7 Master Thesis\dataset\semseg\train\mask' + "\\" + str(i) + ".tif")
+        pano_image.save(r'E:\Storage\7 Master Thesis\dataset\semseg\train\image' + "\\uut" + str(i) + ".tif")
+        label_image = Image.fromarray(l)
+        label_image.save(r'E:\Storage\7 Master Thesis\dataset\semseg\train\mask' + "\\uut" + str(i) + ".tif")
 

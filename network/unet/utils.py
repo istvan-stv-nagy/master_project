@@ -12,6 +12,7 @@ def save_checkpoint(state, filename="my_checkpoint.pth.tar"):
 def load_checkpoint(checkpoint, model):
     print("Loading checkpoint")
     model.load_state_dict(checkpoint["state_dict"])
+    model.eval()
 
 
 def get_loaders(
