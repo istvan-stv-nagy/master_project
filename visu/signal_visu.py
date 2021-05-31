@@ -1,4 +1,4 @@
-from datastructures.pano_image import PanoImage
+from implementation.datastructures.pano_image import PanoImage
 from visu.plot_functions import plot_signals
 from scipy.ndimage import gaussian_filter1d
 from scipy.signal import convolve

@@ -1,4 +1,4 @@
-from datastructures.pano_image import PanoImage
+from implementation.datastructures.pano_image import PanoImage
 import matplotlib.pyplot as plt
 import numpy as np
 from labeling.label_output import LabelOutput
