@@ -5,11 +5,12 @@ import numpy as np
 
 
 class SegmentationDataset(Dataset):
-    def __init__(self, image_dir, mask_dir, transform=None):
+    def __init__(self, image_dir, mask_dir, transform=None, return_example_id=False):
         self.image_dir = image_dir
         self.mask_dir = mask_dir
         self.transform = transform
         self.images = os.listdir(image_dir)
+        self.return_example_id = return_example_id
 
     def __len__(self):
         return len(self.images)
@@ -23,4 +24,6 @@ class SegmentationDataset(Dataset):
             augmentations = self.transform(image=image, mask=mask)
             image = augmentations["image"]
             mask = augmentations["mask"]
+        if self.return_example_id:
+            return image, mask, self.images[item].split('.')[0]
         return image, mask
