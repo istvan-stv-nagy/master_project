@@ -4,7 +4,7 @@ from implementation.utils.conversions import Converter
 from data.data_reader import DataReader
 from filter.filters import PointCloudFilter
 from labeling.label_pano import LabelPanoTool
-from implementation.unet.unet import UNET
+from implementation.net.unet import UNET
 from implementation.unet import load_checkpoint
 from visu.input_visu import InputVisu
 from visu.label_visu import LabelVisu

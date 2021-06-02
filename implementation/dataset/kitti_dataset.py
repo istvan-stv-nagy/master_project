@@ -29,7 +29,7 @@ class KittiDataset(Dataset):
         velo_path = os.path.join(self.velo_dir, self.images[item].replace(".png", ".bin"))
         calib_path = os.path.join(self.calib_dir, self.images[item].replace(".png", ".txt"))
 
-        image_color = cv2.imread(img_path)
+        image_color = cv2.imread(img_path, cv2.IMREAD_COLOR)
         calib: CalibData = self.__read_calib(calib_path)
         point_cloud = self.__read_velo(velo_path)
         return FrameData(

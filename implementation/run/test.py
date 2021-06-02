@@ -3,7 +3,8 @@ from implementation.dataset.kitti_dataset import KittiDataset, FrameData
 import matplotlib.pyplot as plt
 import numpy as np
 
-from implementation.unet.unet import UNET
+from implementation.net.unet import UNET
+from implementation.postprocessing.grid_occupancy import get_grid_occupancy
 from implementation.utils.conversions import Converter
 from implementation.utils.network_utils import *
 from implementation.visu.lidar_visu import LidarVisu
@@ -39,10 +40,13 @@ def run_frame(index,
     # project masked prediction velo points to image
     projection_coordinates = converter.velo_2_image(pano.velo(mask=prediction))
 
-    #workflow_visu.show(index, frame_data.image_color, pano, prediction, projection_coordinates)
-    #lidar_visu.show(frame_data.point_cloud, frame_data.point_cloud[0, :])
+    # occupancy grid mapping
+    occupancy = get_grid_occupancy(projection_coordinates.T, in_size=(375, 1242), grid_cell_size=(8, 8))
+
+    workflow_visu.show(index, frame_data.image_color, pano, prediction, projection_coordinates, occupancy)
+    lidar_visu.show(frame_data.point_cloud, frame_data.point_cloud[0, :])
     pano_visu.show(index, pano)
-    #plt.show()
+    plt.show()
     plt.close()
 
 

@@ -3,7 +3,7 @@ from albumentations.pytorch import ToTensorV2
 from tqdm import tqdm
 import torch.nn as nn
 import torch.optim as optim
-from implementation.unet.unet import UNET
+from implementation.net.unet import UNET
 from implementation.utils.network_utils import *
 
 # hyperparameters
