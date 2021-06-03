@@ -10,6 +10,7 @@ from implementation.utils.conversions import Converter
 TRAINING_IMAGE_DIR = r'E:\Storage\7 Master Thesis\dataset\data_road\training\image_2'
 TRAINING_CALIB_DIR = r'E:\Storage\7 Master Thesis\dataset\data_road\training\calib'
 TRAINING_VELO_DIR = r'E:\Storage\7 Master Thesis\dataset\velodyne\training\velodyne'
+TRAINING_GT_DIR = r'E:\Storage\7 Master Thesis\dataset\data_road\training\gt_image_2'
 
 
 class SemanticLabeling:
@@ -57,7 +58,8 @@ def main():
     dataset = KittiDataset(
         image_dir=TRAINING_IMAGE_DIR,
         calib_dir=TRAINING_CALIB_DIR,
-        velo_dir=TRAINING_VELO_DIR
+        velo_dir=TRAINING_VELO_DIR,
+        gt_dir=TRAINING_GT_DIR
     )
 
     for i in range(98, dataset.__len__()):

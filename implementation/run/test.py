@@ -7,6 +7,7 @@ from implementation.net.unet import UNET
 from implementation.postprocessing.grid_occupancy import get_grid_occupancy
 from implementation.utils.conversions import Converter
 from implementation.utils.network_utils import *
+from implementation.visu.evaluation_visu import EvaluationVisu
 from implementation.visu.lidar_visu import LidarVisu
 from implementation.visu.pano_visu import PanoVisu
 from implementation.visu.workflow_visu import WorkFlowVisu
@@ -14,6 +15,8 @@ from implementation.visu.workflow_visu import WorkFlowVisu
 TESTING_IMAGE_DIR = r'E:\Storage\7 Master Thesis\dataset\data_road\training\image_2'
 TESTING_CALIB_DIR = r'E:\Storage\7 Master Thesis\dataset\data_road\training\calib'
 TESTING_VELO_DIR = r'E:\Storage\7 Master Thesis\dataset\velodyne\training\velodyne'
+TESTING_GT_DIR = r'E:\Storage\7 Master Thesis\dataset\data_road\training\gt_image_2'
+
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 MODEL_PATH = r'E:\Storage\7 Master Thesis\results\checkpoints\checkpoint_acc9762_loss0.0462.pth.tar'
 
@@ -23,7 +26,8 @@ def run_frame(index,
               model,
               workflow_visu: WorkFlowVisu,
               lidar_visu: LidarVisu,
-              pano_visu: PanoVisu):
+              pano_visu: PanoVisu,
+              evaluation_visu: EvaluationVisu):
     # create converter object
     converter: Converter = Converter(calib=frame_data.calib)
 
@@ -46,6 +50,7 @@ def run_frame(index,
     workflow_visu.show(index, frame_data.image_color, pano, prediction, projection_coordinates, occupancy)
     lidar_visu.show(frame_data.point_cloud, frame_data.point_cloud[0, :])
     pano_visu.show(index, pano)
+    evaluation_visu.show(gt_image=frame_data.gt_image, prediction_image=occupancy)
     plt.show()
     plt.close()
 
@@ -54,7 +59,8 @@ def main():
     dataset = KittiDataset(
         image_dir=TESTING_IMAGE_DIR,
         calib_dir=TESTING_CALIB_DIR,
-        velo_dir=TESTING_VELO_DIR
+        velo_dir=TESTING_VELO_DIR,
+        gt_dir=TESTING_GT_DIR
     )
 
     model: UNET = load_checkpoint(model_path=MODEL_PATH, model=UNET(in_channels=1, out_channels=1), device=DEVICE)
@@ -62,11 +68,12 @@ def main():
     workflow_visu = WorkFlowVisu(save_fig=False, dump_path=r'E:\Storage\7 Master Thesis\results\dumps\workflow_visu')
     lidar_visu = LidarVisu(y_range=(-20, 20), x_range=(0, 100))
     pano_visu = PanoVisu(save_fig=True, dump_path=r'E:\Storage\7 Master Thesis\results\dumps\pano_visu\depth')
+    evaluation_visu = EvaluationVisu()
 
     for i in range(dataset.__len__()):
         # read frame
         frame_data: FrameData = dataset[i]
-        run_frame(i, frame_data, model, workflow_visu, lidar_visu, pano_visu)
+        run_frame(i, frame_data, model, workflow_visu, lidar_visu, pano_visu, evaluation_visu)
 
 
 if __name__ == '__main__':
