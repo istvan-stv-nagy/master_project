@@ -34,11 +34,18 @@ class KittiDataset(Dataset):
 
         image_color = cv2.imread(img_path, cv2.IMREAD_COLOR)
         gt_image = cv2.imread(gt_img_path)
+        rgt = np.zeros((len(gt_image), len(gt_image[0])))
+        class1 = np.array([255, 0, 255])
+        for i in range(len(gt_image)):
+            for j in range(len(gt_image[0])):
+                pixel = np.array(gt_image[i][j])
+                if np.array_equal(pixel, class1):
+                    rgt[i][j] = 1
         calib: CalibData = self.__read_calib(calib_path)
         point_cloud = self.__read_velo(velo_path)
         return FrameData(
             image_color=image_color,
-            gt_image=gt_image,
+            gt_image=rgt,
             calib=calib,
             point_cloud=point_cloud,
         )

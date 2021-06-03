@@ -11,16 +11,24 @@ class PixelMetrics:
         self.fpr = fpr
         self.fnr = fnr
 
+    def __repr__(self):
+        return "precision=" + str(self.precision) + \
+               "; recall=" + str(self.recall) + \
+               "; accuracy=" + str(self.accuracy) + \
+               "; FPR=" + str(self.fpr) + \
+               "; FNR=" + str(self.fnr) + '' \
+               "; f_measures=" + str(self.f_measures)
+
 
 class PixelEvaluation:
     def __init__(self):
         pass
 
     def run(self, prediction, ground_truth):
-        tp = np.sum(prediction * ground_truth)
-        fp = np.sum((prediction != True) & (ground_truth == False))
-        fn = np.sum((prediction == False) & (ground_truth == True))
-        tn = np.sum((prediction == False) & (ground_truth == False))
+        tp = np.sum((prediction == 1) & (ground_truth == 1))
+        fp = np.sum((prediction == 1) & (ground_truth == 0))
+        fn = np.sum((prediction == 0) & (ground_truth == 1))
+        tn = np.sum((prediction == 0) & (ground_truth == 0))
         precision = tp / (tp + fp)
         recall = tp / (tp + fn)
         f_measures = [(1 + beta*beta) * (precision * recall) / (beta*beta*precision + recall) for beta in range(1, 10)]

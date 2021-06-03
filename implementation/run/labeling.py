@@ -46,7 +46,6 @@ class SemanticLabeling:
 
     def to_label_image(self):
         label = np.zeros((64, 514))
-        print(self.poly.exterior)
         for i in range(64):
             for j in range(514):
                 if self.poly.contains(Point(j, i)):

@@ -31,7 +31,7 @@ class WorkFlowVisu:
 
         occupancy_visu.imshow(image_color)
         occupancy_image = np.ma.masked_array(occupancy, occupancy == 0)
-        occupancy_visu.imshow(occupancy_image, alpha=1, cmap='jet')
+        occupancy_visu.imshow(occupancy_image, alpha=0.7)
 
         if self.save_fig:
             fig.savefig(os.path.join(self.dump_path, "result" + str(index) + ".png"))
