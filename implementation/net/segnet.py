@@ -1,5 +1,6 @@
 import torch.nn as nn
 import torch
+import torchvision.transforms.functional as F
 
 
 class SegnetDownConv(nn.Module):
@@ -102,6 +103,8 @@ class SegNet(nn.Module):
         x = self.max_unpool(x, i1)
         x = self.decoder_1(x)
 
+        if x.shape != i0.shape:
+            x = F.resize(x, size=i0.shape[2:])
         x = self.max_unpool(x, i0)
         x = self.decoder_0(x)
 

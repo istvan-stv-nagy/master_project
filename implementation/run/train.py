@@ -1,8 +1,12 @@
+import os.path
+
 import albumentations as A
 from albumentations.pytorch import ToTensorV2
 from tqdm import tqdm
 import torch.nn as nn
 import torch.optim as optim
+
+from implementation.net.segnet import SegNet
 from implementation.net.unet import UNET
 from implementation.utils.network_utils import *
 
@@ -10,16 +14,16 @@ from implementation.utils.network_utils import *
 LEARNING_RATE = 1e-3
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 BATCH_SIZE = 16
-NUM_EPOCHS = 3
+NUM_EPOCHS = 30
 NUM_WORKERS = 2
 IMAGE_HEIGHT = 64
 IMAGE_WIDTH = 514
 PIN_MEMORY = True
 LOAD_MODEL = False
-TRAIN_IMG_DIR = r"E:\Storage\7 Master Thesis\dataset\semseg\train_nanis0\image"
-TRAIN_MASK_DIR = r"E:\Storage\7 Master Thesis\dataset\semseg\train\mask"
-VAL_IMG_DIR = r"E:\Storage\7 Master Thesis\dataset\semseg\train_nanis0\image_val"
-VAL_MASK_DIR = r"E:\Storage\7 Master Thesis\dataset\semseg\train\mask_val"
+TRAIN_IMG_DIR = r"G:\Steve\master\master_dataset\train\image"
+TRAIN_MASK_DIR = r"G:\Steve\master\master_dataset\train\mask"
+VAL_IMG_DIR = r"G:\Steve\master\master_dataset\train\image_val"
+VAL_MASK_DIR = r"G:\Steve\master\master_dataset\train\mask_val"
 
 
 def train(loader, model, optimizer, loss_fn, scaler):
@@ -71,7 +75,8 @@ def main():
         ]
     )
 
-    model = UNET(in_channels=1, out_channels=1).to(DEVICE)
+    #model = UNET(in_channels=1, out_channels=1).to(DEVICE)
+    model = SegNet(in_channels=1, out_channels=1).to(DEVICE)
     loss_fn = nn.BCEWithLogitsLoss()
     optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
     train_loader, val_loader = get_loaders(
@@ -95,13 +100,13 @@ def main():
             "state_dict": model.state_dict(),
             "optimizer": optimizer.state_dict()
         }
-        save_checkpoint(checkpoint)
+        save_checkpoint(checkpoint, filename=os.path.join(r'G:\Steve\master\checkpoints\segnet', str(epoch) + "segnet_checkpoint.pth.tar"))
 
         # check accuracy
         check_accuracy(val_loader, model, device=DEVICE)
 
         # print examples
-        save_predictions_as_imgs(val_loader, model, folder="saved_images/", device=DEVICE)
+        save_predictions_as_imgs(val_loader, model, folder=r'G:\Steve\master\checkpoints\segnet\saved_images', device=DEVICE)
 
 
 if __name__ == '__main__':
