@@ -98,16 +98,16 @@ class SegNet(nn.Module):
         x = F.max_unpool2d(x, indices=i4, kernel_size=(2, 2), stride=(2, 2), output_size=dim_4)
         x = self.decoder_4(x)
 
-        x = F.max_unpool2d(x, indices=i4, kernel_size=(2, 2), stride=(2, 2), output_size=dim_3)
+        x = F.max_unpool2d(x, indices=i3, kernel_size=(2, 2), stride=(2, 2), output_size=dim_3)
         x = self.decoder_3(x)
 
-        x = F.max_unpool2d(x, indices=i4, kernel_size=(2, 2), stride=(2, 2), output_size=dim_2)
+        x = F.max_unpool2d(x, indices=i2, kernel_size=(2, 2), stride=(2, 2), output_size=dim_2)
         x = self.decoder_2(x)
 
-        x = F.max_unpool2d(x, indices=i4, kernel_size=(2, 2), stride=(2, 2), output_size=dim_1)
+        x = F.max_unpool2d(x, indices=i1, kernel_size=(2, 2), stride=(2, 2), output_size=dim_1)
         x = self.decoder_1(x)
 
-        x = F.max_unpool2d(x, indices=i4, kernel_size=(2, 2), stride=(2, 2), output_size=dim_0)
+        x = F.max_unpool2d(x, indices=i0, kernel_size=(2, 2), stride=(2, 2), output_size=dim_0)
         x = self.decoder_0(x)
 
         x = self.final_layer(x)
