@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from implementation.evaluation.pixel_evaluation import PixelEvaluation, PixelMetrics
+from implementation.net.segnet import SegNet
 from implementation.net.unet import UNET
 from implementation.postprocessing.grid_occupancy import get_grid_occupancy
 from implementation.utils.conversions import Converter
@@ -20,7 +21,7 @@ TESTING_VELO_DIR = r'E:\Storage\7 Master Thesis\dataset\velodyne\training\velody
 TESTING_GT_DIR = r'E:\Storage\7 Master Thesis\dataset\data_road\training\gt_image_2'
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-MODEL_PATH = r'E:\Storage\7 Master Thesis\results\checkpoints\checkpoint_acc9762_loss0.0462.pth.tar'
+MODEL_PATH = r'E:\Storage\7 Master Thesis\results\checkpoints\segnet\segnet_checkpoint_acc92_loss0.235_bsize16_lr3.pth.tar'
 
 
 def run_frame(index,
@@ -72,7 +73,7 @@ def main():
         gt_dir=TESTING_GT_DIR
     )
 
-    model: UNET = load_checkpoint(model_path=MODEL_PATH, model=UNET(in_channels=1, out_channels=1), device=DEVICE)
+    model: SegNet = load_checkpoint(model_path=MODEL_PATH, model=SegNet(in_channels=1, out_channels=1), device=DEVICE)
 
     workflow_visu = WorkFlowVisu(save_fig=False, dump_path=r'E:\Storage\7 Master Thesis\results\dumps\workflow_visu')
     lidar_visu = LidarVisu(y_range=(-20, 20), x_range=(0, 100))
@@ -82,7 +83,7 @@ def main():
 
     pixel_evaluation = PixelEvaluation()
 
-    for i in range(dataset.__len__()):
+    for i in range(1, dataset.__len__()):
         # read frame
         frame_data: FrameData = dataset[i]
         run_frame(i, frame_data, model, pixel_evaluation, workflow_visu, lidar_visu, pano_visu, evaluation_visu, output_visu)

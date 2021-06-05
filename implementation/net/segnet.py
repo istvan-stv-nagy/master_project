@@ -1,6 +1,6 @@
 import torch.nn as nn
 import torch
-import torchvision.transforms.functional as F
+import torch.nn.functional as F
 
 
 class SegnetDownConv(nn.Module):
@@ -73,39 +73,41 @@ class SegNet(nn.Module):
         self.final_layer = nn.ConvTranspose2d(in_channels=64, out_channels=out_channels, kernel_size=(3, 3), padding=(1, 1))
 
         self.max_pool = nn.MaxPool2d(kernel_size=(2, 2), stride=(2, 2), return_indices=True)
-        self.max_unpool = nn.MaxUnpool2d(kernel_size=(2, 2), stride=(2, 2))
 
     def forward(self, x):
+        dim_0 = x.size()
         x = self.encoder_0(x)
         x, i0 = self.max_pool(x)
 
+        dim_1 = x.size()
         x = self.encoder_1(x)
         x, i1 = self.max_pool(x)
 
+        dim_2 = x.size()
         x = self.encoder_2(x)
         x, i2 = self.max_pool(x)
 
+        dim_3 = x.size()
         x = self.encoder_3(x)
         x, i3 = self.max_pool(x)
 
+        dim_4 = x.size()
         x = self.encoder_4(x)
         x, i4 = self.max_pool(x)
 
-        x = self.max_unpool(x, i4)
+        x = F.max_unpool2d(x, indices=i4, kernel_size=(2, 2), stride=(2, 2), output_size=dim_4)
         x = self.decoder_4(x)
 
-        x = self.max_unpool(x, i3)
+        x = F.max_unpool2d(x, indices=i4, kernel_size=(2, 2), stride=(2, 2), output_size=dim_3)
         x = self.decoder_3(x)
 
-        x = self.max_unpool(x, i2)
+        x = F.max_unpool2d(x, indices=i4, kernel_size=(2, 2), stride=(2, 2), output_size=dim_2)
         x = self.decoder_2(x)
 
-        x = self.max_unpool(x, i1)
+        x = F.max_unpool2d(x, indices=i4, kernel_size=(2, 2), stride=(2, 2), output_size=dim_1)
         x = self.decoder_1(x)
 
-        if x.shape != i0.shape:
-            x = F.resize(x, size=i0.shape[2:])
-        x = self.max_unpool(x, i0)
+        x = F.max_unpool2d(x, indices=i4, kernel_size=(2, 2), stride=(2, 2), output_size=dim_0)
         x = self.decoder_0(x)
 
         x = self.final_layer(x)
