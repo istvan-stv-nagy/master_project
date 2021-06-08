@@ -16,12 +16,13 @@ class FrameData:
 
 
 class KittiDataset(Dataset):
-    def __init__(self, velo_dir, image_dir, calib_dir, gt_dir):
+    def __init__(self, velo_dir, image_dir, calib_dir, gt_dir, return_name=False):
         self.velo_dir = velo_dir
         self.image_dir = image_dir
         self.calib_dir = calib_dir
         self.gt_dir = gt_dir
         self.images = os.listdir(image_dir)
+        self.return_name = return_name
 
     def __len__(self):
         return len(self.images)
@@ -33,22 +34,22 @@ class KittiDataset(Dataset):
         calib_path = os.path.join(self.calib_dir, self.images[item].replace(".png", ".txt"))
 
         image_color = cv2.imread(img_path, cv2.IMREAD_COLOR)
-        gt_image = cv2.imread(gt_img_path)
-        rgt = np.zeros((len(gt_image), len(gt_image[0])))
-        class1 = np.array([255, 0, 255])
-        for i in range(len(gt_image)):
-            for j in range(len(gt_image[0])):
-                pixel = np.array(gt_image[i][j])
-                if np.array_equal(pixel, class1):
-                    rgt[i][j] = 1
+        gt_image = None
+        if gt_img_path is not None:
+            gt_image = self.__read_gt_image(gt_img_path)
+
         calib: CalibData = self.__read_calib(calib_path)
         point_cloud = self.__read_velo(velo_path)
-        return FrameData(
+        frame_data = FrameData(
             image_color=image_color,
-            gt_image=rgt,
+            gt_image=gt_image,
             calib=calib,
             point_cloud=point_cloud,
         )
+        if not self.return_name:
+            return frame_data
+        else:
+            return frame_data, self.images[item].replace(".png", "")
 
     @staticmethod
     def __read_calib(path):
@@ -74,3 +75,15 @@ class KittiDataset(Dataset):
         if os.path.exists(path2):
             return path2
         return None
+
+    @staticmethod
+    def __read_gt_image(gt_img_path):
+        gt_image = cv2.imread(gt_img_path)
+        rgt = np.zeros((len(gt_image), len(gt_image[0])))
+        class1 = np.array([255, 0, 255])
+        for i in range(len(gt_image)):
+            for j in range(len(gt_image[0])):
+                pixel = np.array(gt_image[i][j])
+                if np.array_equal(pixel, class1):
+                    rgt[i][j] = 1
+        return rgt

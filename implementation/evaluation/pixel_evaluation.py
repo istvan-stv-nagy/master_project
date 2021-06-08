@@ -35,7 +35,6 @@ class PixelEvaluation:
         accuracy = (tp + tn) / (tp + fp + tn + fn)
         fpr = fp / (fp + tn)
         fnr = fn / (fn + tp)
-        print(tp, fp, precision, recall, f_measures[0], accuracy, fpr, fnr)
         return PixelMetrics(
             precision=precision,
             recall=recall,

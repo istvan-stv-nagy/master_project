@@ -1,5 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
+
+from implementation.datastructures.freespace_output import FreespaceOutput
 from implementation.datastructures.pano_image import PanoImage
 from implementation.visu.plot_utils import PlotUtils
 import os
@@ -11,7 +13,7 @@ class WorkFlowVisu:
         self.save_fig = save_fig
         self.dump_path = dump_path
 
-    def show(self, index, image_color, pano: PanoImage, prediction, projection_coordinates, occupancy):
+    def show(self, index, image_color, pano: PanoImage, prediction, projection_coordinates, freespace: FreespaceOutput):
         fig = plt.figure(constrained_layout=True, figsize=(22, 8))
         gs = fig.add_gridspec(2, 2)
         pano_visu = fig.add_subplot(gs[0, 0])
@@ -30,7 +32,7 @@ class WorkFlowVisu:
         projection_visu.imshow(projection_image)
 
         occupancy_visu.imshow(image_color)
-        occupancy_image = np.ma.masked_array(occupancy, occupancy == 0)
+        occupancy_image = np.ma.masked_array(freespace.mask, freespace.mask == 0)
         occupancy_visu.imshow(occupancy_image, alpha=0.7)
 
         if self.save_fig:

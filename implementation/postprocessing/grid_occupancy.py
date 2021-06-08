@@ -4,6 +4,8 @@ import skimage.measure
 import numpy as np
 from shapely.geometry import Polygon, Point
 
+from implementation.datastructures.freespace_output import FreespaceOutput
+
 
 class GridCell:
     def __init__(self):
@@ -78,17 +80,7 @@ def get_grid_occupancy(coordinates, in_size, grid_cell_size=(2, 2)):
         if top is not None:
             top_points += [grid[top[0]][top[1]].upmost_coordinate()]
 
-    left_points = sorted(left_points, reverse=True)
-    right_points = sorted(right_points, reverse=False)
-    points = left_points + top_points + right_points
-    points = [x[::-1] for x in points]
-    poly: Polygon = Polygon(points)
-    res = np.zeros(in_size)
-    for i in range(len(res)):
-        for j in range(len(res[i])):
-            if poly.contains(Point(j, i)):
-                res[i][j] = 1
-    return res
+    return FreespaceOutput(left_points, right_points, top_points, in_size)
 
 
 

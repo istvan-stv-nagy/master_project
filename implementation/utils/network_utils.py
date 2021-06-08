@@ -84,6 +84,7 @@ def check_accuracy(loader, model, device="cuda"):
     )
     print(f"Dice score: {dice_score/len(loader)}")
     model.train()
+    return num_correct / num_pixels
 
 
 def save_predictions_as_imgs(loader, model, folder="saved_images/", device="cuda"):
