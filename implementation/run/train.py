@@ -20,10 +20,10 @@ IMAGE_HEIGHT = 64
 IMAGE_WIDTH = 514
 PIN_MEMORY = True
 LOAD_MODEL = False
-TRAIN_IMG_DIR = r"G:\Steve\master\master_dataset\train\image"
-TRAIN_MASK_DIR = r"G:\Steve\master\master_dataset\train\mask"
-VAL_IMG_DIR = r"G:\Steve\master\master_dataset\train\image_val"
-VAL_MASK_DIR = r"G:\Steve\master\master_dataset\train\mask_val"
+TRAIN_IMG_DIR = r"E:\Storage\7 Master Thesis\dataset\semseg\dataset_roadXYZ_valid"
+TRAIN_MASK_DIR = r"E:\Storage\7 Master Thesis\dataset\semseg\masks\mask"
+VAL_IMG_DIR = r"E:\Storage\7 Master Thesis\dataset\semseg\dataset_roadXYZ_valid"
+VAL_MASK_DIR = r"E:\Storage\7 Master Thesis\dataset\semseg\masks\mask"
 
 
 def train(loader, model, optimizer, loss_fn, scaler):
@@ -76,7 +76,7 @@ def main():
     )
 
     #model = UNET(in_channels=1, out_channels=1).to(DEVICE)
-    model = SegNet(in_channels=1, out_channels=1).to(DEVICE)
+    model = SegNet(in_channels=3, out_channels=1).to(DEVICE)
     loss_fn = nn.BCEWithLogitsLoss()
     optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
     train_loader, val_loader = get_loaders(

@@ -1,3 +1,5 @@
+import csv
+
 from implementation.curbstone.road_edge_classifier import RoadEdgeClassifier
 from implementation.datastructures.freespace_output import FreespaceOutput
 from implementation.datastructures.pano_image import PanoImage
@@ -24,33 +26,41 @@ TESTING_VELO_DIR = r'E:\Storage\7 Master Thesis\dataset\velodyne\training\velody
 TESTING_GT_DIR = r'E:\Storage\7 Master Thesis\dataset\data_road\training\gt_image_2'
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-MODEL_PATH = r'E:\Storage\7 Master Thesis\results\checkpoints\unet\checkpoint_acc9762_loss0.0462.pth.tar'
+MODEL_PATH = r'E:\Storage\7 Master Thesis\results\models\unet\unet_all_used\checkpoint_acc9762_loss0.0462.pth.tar'
+#MODEL_PATH = r'D:\master_dataset\models\unet\34unet_checkpoint.pth.tar'
+MODEL_TYPE = UNET
 
+testing_names = [
+    "um_000000", "um_000014", "um_000014", "um_000029", "um_000030", "um_000044", "um_000045", "um_000059", "um_000060", "um_000074", "um_000075", "um_000089", "um_000090",
+    "umm_000009", "umm_000010", "umm_000024", "umm_000025", "umm_000039", "umm_000040", "umm_000054", "umm_000055", "umm_000069", "umm_000070", "umm_000084", "umm_000085", "umm_000090",
+    "uu_000008", "uu_000009", "uu_000023", "uu_000024", "uu_000038", "uu_000039", "uu_000053", "uu_000054", "uu_000068", "uu_000069", "uu_000083", "uu_000084"
+]
+
+testing_ids = [9,10,24,25,39,40,54,55,69,70,84,85,90,96,110,125,126,140,141,155,156,170,171,185,186,199,200,214,215,229,230,244,245,259,260,274,275]
 
 def main():
-    dataset = KittiDataset(
+    f = open(r'E:\Storage\7 Master Thesis\results\models\unet\unet_all_used\eval.csv', "w", newline='')
+    writer = csv.writer(f, delimiter=",")
+    writer.writerow(PixelMetrics.names())
+    kitti_dataset = KittiDataset(
         image_dir=TESTING_IMAGE_DIR,
         calib_dir=TESTING_CALIB_DIR,
         velo_dir=TESTING_VELO_DIR,
-        gt_dir=TESTING_GT_DIR
+        gt_dir=TESTING_GT_DIR,
+        return_name=True
     )
 
-    model: UNET = load_checkpoint(model_path=MODEL_PATH, model=UNET(in_channels=1, out_channels=1), device=DEVICE)
+    model: MODEL_TYPE = load_checkpoint(model_path=MODEL_PATH, model=MODEL_TYPE(in_channels=1, out_channels=1), device=DEVICE)
 
-    road_edge_classifier: RoadEdgeClassifier = RoadEdgeClassifier()
-
-    workflow_visu = WorkFlowVisu(save_fig=False, dump_path=r'E:\Storage\7 Master Thesis\results\dumps\workflow_visu')
-    lidar_visu = LidarVisu(y_range=(-20, 20), x_range=(0, 100))
-    pano_visu = PanoVisu(save_fig=False, dump_path=r'E:\Storage\7 Master Thesis\results\dumps\pano_visu\distance')
     evaluation_visu = EvaluationVisu()
-    output_visu = OutputVisu(save_fig=False, dump_path=r'E:\Storage\7 Master Thesis\results\dumps\freespace_polygon')
-    curbstone_visu = CurbstoneVisu()
 
     pixel_evaluation = PixelEvaluation()
 
-    for i in range(18, dataset.__len__()):
+    xs = np.array([])
+    for i in testing_ids:
+        print("Running scene ", i)
         # read frame
-        frame_data: FrameData = dataset[i]
+        frame_data, name = kitti_dataset[i]
         # create converter object
         converter: Converter = Converter(calib=frame_data.calib)
 
@@ -67,24 +77,27 @@ def main():
         # project masked prediction velo points to image
         projection_coordinates = converter.velo_2_image(pano.velo(mask=prediction))
 
-        # freespace output
-        freespace: FreespaceOutput = get_grid_occupancy(projection_coordinates.T, in_size=(375, 1242), grid_cell_size=(8, 8))
+        xx, yy, zz = pano.velo(mask=prediction)
+        xs = np.concatenate((xs, xx))
 
-        # extract curb
-        road_edges, edge_profiles = road_edge_classifier.run(prediction, pano)
+        # freespace output
+        #freespace: FreespaceOutput = get_grid_occupancy(projection_coordinates.T, in_size=(375, 1242), grid_cell_size=(8, 8))
 
         # run evaluations
-        pixel_metrics: PixelMetrics = pixel_evaluation.run(freespace.mask, frame_data.gt_image)
+        #if freespace.mask.shape == frame_data.gt_image.shape:
+        #    pixel_metrics: PixelMetrics = pixel_evaluation.run(freespace.mask, frame_data.gt_image)
+        #    writer.writerow(pixel_metrics.values())
 
-        #curbstone_visu.show(frame_data.image_color, prediction, road_edges, edge_profiles)
-        # workflow_visu.show(index, frame_data.image_color, pano, prediction, projection_coordinates, freespace)
-        # lidar_visu.show(frame_data.point_cloud, frame_data.point_cloud[0, :])
-        # pano_visu.show(index, pano)
         # evaluation_visu.show(gt_image=frame_data.gt_image, prediction_image=freespace.mask)
-        output_visu.show(i, image=frame_data.image_color, freespace=freespace, fill=False)
-        plt.show()
-        plt.close()
+        # plt.show()
+        # plt.close()
 
+    plt.figure()
+    xs = xs[xs > 19.99]
+    plt.hist(xs, bins=np.arange(20, 51, 1), density=True)
+    plt.show()
+
+    f.close()
 
 if __name__ == '__main__':
     main()

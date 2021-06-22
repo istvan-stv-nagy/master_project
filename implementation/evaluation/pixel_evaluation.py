@@ -19,6 +19,12 @@ class PixelMetrics:
                "; FNR=" + str(self.fnr) + '' \
                "; f_measures=" + str(self.f_measures)
 
+    def values(self):
+        return [self.precision, self.recall, self.accuracy, self.fpr, self.fnr, self.f_measures[0], max(self.f_measures)]
+
+    @staticmethod
+    def names():
+        return ['Precision', 'Recall', 'Accuracy', 'FPR', 'FNR', 'F1', 'maxF']
 
 class PixelEvaluation:
     def __init__(self):

@@ -1,6 +1,6 @@
 import torch
 import torchvision
-from implementation.dataset.segmentation_dataset import SegmentationDataset
+from implementation.dataset.segmentation_dataset import SegmentationDataset, SegmentationDatasetRoadXYZ
 from torch.utils.data import DataLoader
 
 
@@ -33,10 +33,9 @@ def get_loaders(
         num_workers=4,
         pin_memory=True
 ):
-    train_ds = SegmentationDataset(
-        image_dir=train_dir,
-        mask_dir=train_maskdir,
-        transform=train_transform
+    train_ds = SegmentationDatasetRoadXYZ(
+        pano_dir=train_dir,
+        mask_dir=train_maskdir
     )
 
     train_loader = DataLoader(
@@ -47,10 +46,9 @@ def get_loaders(
         shuffle=True
     )
 
-    val_ds = SegmentationDataset(
-        image_dir=val_dir,
-        mask_dir=val_maskdir,
-        transform=val_transform
+    val_ds = SegmentationDatasetRoadXYZ(
+        pano_dir=val_dir,
+        mask_dir=val_maskdir
     )
 
     val_loader = DataLoader(

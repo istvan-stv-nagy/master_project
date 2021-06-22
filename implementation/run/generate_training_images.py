@@ -8,9 +8,9 @@ import torch
 TRAINING_IMAGE_DIR = r'E:\Storage\7 Master Thesis\dataset\data_road\testing\image_2'
 TRAINING_CALIB_DIR = r'E:\Storage\7 Master Thesis\dataset\data_road\testing\calib'
 TRAINING_VELO_DIR = r'E:\Storage\7 Master Thesis\dataset\velodyne\testing\velodyne'
-TRAINING_GT_DIR = r'E:\Storage\7 Master Thesis\dataset\data_road\training\gt_image_2'
+TRAINING_GT_DIR = r'E:\Storage\7 Master Thesis\dataset\data_road\testing\gt_image_2'
 
-EXAMPLES_DUMP_PATH = r'E:\Storage\7 Master Thesis\dataset\semseg\train_roadXYZ'
+EXAMPLES_DUMP_PATH = r'E:\Storage\7 Master Thesis\dataset\semseg\dataset_roadXYZ_valid\image'
 TESTING = True
 
 
@@ -33,7 +33,7 @@ def main():
         x = np.array([pano.x_road_img, pano.y_road_img, pano.z_road_img])
 
         names = name.split('_')
-        if names[0] == 'umm' and not TESTING:
+        if names[0] == 'um' and not TESTING:
             prefix = ''
         else:
             if TESTING:
@@ -61,6 +61,7 @@ def flip_numpy_array_from_folder(folder, out_folder):
 
 
 if __name__ == '__main__':
-    in_path = r'E:\Storage\7 Master Thesis\dataset\semseg\dataset_roadXYZ\image'
-    out_path = r'E:\Storage\7 Master Thesis\dataset\semseg\dataset_roadXYZ\image_augmented'
+    in_path = r'E:\Storage\7 Master Thesis\dataset\semseg\dataset_roadXYZ_valid\image'
+    out_path = r'E:\Storage\7 Master Thesis\dataset\semseg\dataset_roadXYZ_valid\image_augmented'
+    #main()
     flip_numpy_array_from_folder(in_path, out_path)

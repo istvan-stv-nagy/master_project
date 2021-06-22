@@ -27,3 +27,20 @@ class SegmentationDataset(Dataset):
         if self.return_example_id:
             return image, mask, self.images[item].split('.')[0]
         return image, mask
+
+
+class SegmentationDatasetRoadXYZ(Dataset):
+    def __init__(self, pano_dir, mask_dir):
+        self.pano_dir = pano_dir
+        self.mask_dir = mask_dir
+        self.examples = os.listdir(pano_dir)
+
+    def __len__(self):
+        return len(self.examples)
+
+    def __getitem__(self, item):
+        example_path = os.path.join(self.pano_dir, self.examples[item])
+        mask_path = os.path.join(self.mask_dir, self.examples[item].replace(".npy", ".tif"))
+        example = np.load(example_path)
+        mask = np.array(Image.open(mask_path))
+        return np.asarray(example, np.float32), np.asarray(mask, np.float32)

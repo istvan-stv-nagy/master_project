@@ -24,8 +24,16 @@ class OutputVisu:
             norm = colors.Normalize(vmin=0, vmax=2)
             plt.imshow(occupancy_image, cmap='Greens', alpha=0.7, norm=norm)
         else:
-            poly_xs, poly_ys = freespace.poly.exterior.xy
-            plt.plot(poly_xs, poly_ys, color='yellowgreen', linewidth=3)
+            #poly_xs, poly_ys = freespace.poly.exterior.xy
+            #plt.plot(poly_xs, poly_ys, color='yellowgreen', linewidth=3)
+            left_pts = freespace.left_points
+            left_xs = [p[1] for p in left_pts]
+            left_ys = [p[0] for p in left_pts]
+            plt.plot(left_xs, left_ys, 'b-')
+            right_pts = freespace.right_points[2:22]
+            right_xs = [p[1] for p in right_pts]
+            right_ys = [p[0] for p in right_pts]
+            plt.plot(right_xs, right_ys, 'b-')
         if self.save_fig:
             fig.savefig(os.path.join(self.dump_path, "output" + str(index) + ".png"))
 
