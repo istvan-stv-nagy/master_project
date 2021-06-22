@@ -11,19 +11,19 @@ from implementation.net.unet import UNET
 from implementation.utils.network_utils import *
 
 # hyperparameters
-LEARNING_RATE = 1e-3
+LEARNING_RATE = 1e-5
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-BATCH_SIZE = 16
-NUM_EPOCHS = 30
+BATCH_SIZE = 8
+NUM_EPOCHS = 35
 NUM_WORKERS = 2
 IMAGE_HEIGHT = 64
 IMAGE_WIDTH = 514
 PIN_MEMORY = True
 LOAD_MODEL = False
-TRAIN_IMG_DIR = r"E:\Storage\7 Master Thesis\dataset\semseg\dataset_roadXYZ_valid"
-TRAIN_MASK_DIR = r"E:\Storage\7 Master Thesis\dataset\semseg\masks\mask"
-VAL_IMG_DIR = r"E:\Storage\7 Master Thesis\dataset\semseg\dataset_roadXYZ_valid"
-VAL_MASK_DIR = r"E:\Storage\7 Master Thesis\dataset\semseg\masks\mask"
+TRAIN_IMG_DIR = r"G:\Steve\master\master_dataset\semseg\dataset_roadY\image"
+TRAIN_MASK_DIR = r"G:\Steve\master\master_dataset\semseg\masks\mask"
+VAL_IMG_DIR = r"G:\Steve\master\master_dataset\semseg\dataset_roadY\image_val"
+VAL_MASK_DIR = r"G:\Steve\master\master_dataset\semseg\masks\mask_val"
 
 
 def train(loader, model, optimizer, loss_fn, scaler):
@@ -100,13 +100,14 @@ def main():
             "state_dict": model.state_dict(),
             "optimizer": optimizer.state_dict()
         }
-        save_checkpoint(checkpoint, filename=os.path.join(r'G:\Steve\master\checkpoints\segnet', str(epoch) + "segnet_checkpoint.pth.tar"))
+        save_checkpoint(checkpoint, filename=os.path.join(r'G:\Steve\master\master_dataset\semseg\dataset_roadY\train_results\segnet', str(epoch) + "unet_checkpoint.pth.tar"))
 
         # check accuracy
+        print("Running epoch:", epoch)
         check_accuracy(val_loader, model, device=DEVICE)
 
         # print examples
-        save_predictions_as_imgs(val_loader, model, folder=r'G:\Steve\master\checkpoints\segnet\saved_images', device=DEVICE)
+        # save_predictions_as_imgs(val_loader, model, folder=r'G:\Steve\master\checkpoints\segnet\saved_images', device=DEVICE)
 
 
 if __name__ == '__main__':

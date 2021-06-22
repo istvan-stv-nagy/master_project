@@ -13,7 +13,7 @@ from implementation.utils.network_utils import *
 
 # hyperparameters
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-NUM_EPOCHS = 5
+NUM_EPOCHS = 20
 NUM_WORKERS = 2
 IMAGE_HEIGHT = 64
 IMAGE_WIDTH = 514
@@ -24,8 +24,8 @@ TRAIN_MASK_DIR = r"G:\Steve\master\master_dataset\train\mask"
 VAL_IMG_DIR = r"G:\Steve\master\master_dataset\train\image_val"
 VAL_MASK_DIR = r"G:\Steve\master\master_dataset\train\mask_val"
 
-BATCH_SIZES = [8]
-LEARNING_RATES = [0.001]
+BATCH_SIZES = [4, 8, 16, 20]
+LEARNING_RATES = [0.001, 0.0001, 0.00001]
 
 
 def main():
@@ -56,12 +56,11 @@ def main():
         ]
     )
 
-    model = UNET(in_channels=1, out_channels=1).to(DEVICE)
-
     for batch_size in BATCH_SIZES:
         for lr in LEARNING_RATES:
+            model = SegNet(in_channels=1, out_channels=1).to(DEVICE)
             step = 0
-            writer = SummaryWriter(f'runs/unet/bsize{batch_size}_LR{lr}')
+            writer = SummaryWriter(f'G:/Steve/master/checkpoints/segnet/tensorboard/segnet/bsize{batch_size}_LR{lr}')
             train_loader, val_loader = get_loaders(
                 TRAIN_IMG_DIR,
                 TRAIN_MASK_DIR,
@@ -103,6 +102,7 @@ def main():
                 writer.add_scalar('loss', loss, global_step=step)
                 writer.add_scalar('accuracy', acc, global_step=step)
                 step += 1
+            writer.close()
 
 
 if __name__ == '__main__':
